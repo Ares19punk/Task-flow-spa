@@ -1,10 +1,5 @@
-<!DOCTYPE html>
-<html lang="es">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>404 | TaskFlowSPA</title>
-  </head>
+export function(){
+    return `
   <body class="min-h-screen bg-gradient-to-b from-sky-50 via-white to-blue-100 text-slate-800">
     <main class="flex min-h-screen items-center justify-center px-6 py-10">
       <section class="w-full max-w-2xl rounded-[2rem] border border-blue-100 bg-white p-10 text-center shadow-xl shadow-blue-100/70">
@@ -17,7 +12,7 @@
         </div>
       </section>
     </main>
-
-    <script type="module" src="../main.js"></script>
   </body>
-</html>
+`
+}
+

@@ -1,4 +1,4 @@
-import { crearUsuario } from "../services/users.service"
+import { crearUsuario } from "../../services/users.service"
 
 export function renderRegister(){
     return `
@@ -57,9 +57,9 @@ export function renderRegister(){
               </div>
             </div>
 
-            <a class="inline-flex items-center justify-center rounded-2xl bg-blue-600 px-5 py-3 text-sm font-bold text-white hover:bg-blue-500" href="/login" data-link>
+            <button type="submit" class="inline-flex items-center justify-center rounded-2xl bg-blue-600 px-5 py-3 text-sm font-bold text-white hover:bg-blue-500" href="/login" data-link>
               Registrarme
-            </a>
+            </button>
           </form>
         </div>
       </section>
@@ -78,7 +78,7 @@ export function setupRegister(){
 
   form.addEventListener("submit",async function(event){
     event.preventDefault()
-
+    console.log("click")
     const newUser = {
       name : nombre.value,
       lastname : apellido.value,
@@ -92,4 +92,6 @@ export function setupRegister(){
       alert("Usuario creado exitosamente.")
     }
   })
+
+  return true
 }
