@@ -1,16 +1,7 @@
 import "./styles/global.css";
-import { renderizarHome } from "./views/home";
-import { renderRegister, setupRegister } from "./views/auth/register";
-import { renderProfile } from "./views/auth/profile";
-import { renderTaskForm } from "./views/tasks/task-form";
-import { renderTask } from "./views/tasks/tasks";
-import { renderAdmin } from "./views/admin/admin";
+import { initRouter, renderRouter } from "./router/router";
 
-
-const app = document.getElementById("app")
-
-app.innerHTML = renderAdmin()
-
-await setupRegister()
+renderRouter()
+initRouter()
 
 

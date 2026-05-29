@@ -6,8 +6,9 @@ import { renderProfile } from "../views/auth/profile";
 import { renderAdmin } from "../views/admin/admin";
 import { renderTaskForm } from "../views/tasks/task-form";
 import { renderTask } from "../views/tasks/tasks";
+import { renderNotFound } from "../views/not-found";
 
-const routes = {
+export const routes = {
     "/": {
         render: renderizarHome,
         isPublic: true
@@ -27,22 +28,24 @@ const routes = {
     },
     "/dashboard": {
         render: renderizarDashboard,
-        setup: ""
+        setup: null
     },
     "/profile": {
         render: renderProfile,
-        setup: ""
+        setup: null
     },
     "/admin": {
         render: renderAdmin,
-        setup: ""
+        setup: null
     },
     "/task-form": {
         render: renderTaskForm,
-        setup: ""
+        setup: null
     },
     "/tasks": {
         render: renderTask,
-        setup: ""
+        setup: null
     }
 }
+
+export const notFoundView = renderNotFound

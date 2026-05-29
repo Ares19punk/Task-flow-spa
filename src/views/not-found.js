@@ -1,4 +1,4 @@
-export function(){
+export function renderNotFound (){
     return `
   <body class="min-h-screen bg-gradient-to-b from-sky-50 via-white to-blue-100 text-slate-800">
     <main class="flex min-h-screen items-center justify-center px-6 py-10">
