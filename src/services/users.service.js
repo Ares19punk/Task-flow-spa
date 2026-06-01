@@ -47,3 +47,4 @@ export async function obtenerUsuarioEmail(email) {
 
     return usuario[0]
 }
+

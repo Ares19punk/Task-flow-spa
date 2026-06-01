@@ -1,9 +1,10 @@
 import { renderRouter } from "../../router/router"
 import { obtenerUsuarioEmail } from "../../services/users.service"
-import {authStore} from "../../store/authstore"
+import { authStore } from "../../store/authstore"
+import Swal from 'sweetalert2'
 
-export function renderLogin(){
-    return `
+export function renderLogin() {
+  return `
   <body class="min-h-screen bg-gradient-to-b from-sky-50 via-white to-blue-100 text-slate-800">
     <main class="grid min-h-screen lg:grid-cols-[1fr_0.95fr]">
       <section class="flex items-center justify-center px-6 py-10">
@@ -50,31 +51,40 @@ export function renderLogin(){
   </body>`
 }
 
-export function setupLogin(){
+export function setupLogin() {
   const loginForm = document.getElementById("formLogin")
   const email = document.getElementById("email")
   const password = document.getElementById("password")
 
-  loginForm.addEventListener("submit", async function(event){
+  loginForm.addEventListener("submit", async function (event) {
     event.preventDefault()
 
     const enterUser = {
-      "email" : email.value,
-      "password" : password.value
+      "email": email.value,
+      "password": password.value
     }
 
     const user = await obtenerUsuarioEmail(enterUser.email)
 
-  
-    if(user === null){
-      alert("El correo no existe. Vuelve a intentar.")
+
+    if (user === null) {
+      Swal.fire({
+        icon: "error",
+        title: "",
+        text: "El correo no existe. Vuelve a intentar.",
+      });
       return
     }
 
-    if(user.password !== enterUser.password){
-      alert("La contrasena es incorrecta. Intentalo otra vez  ")
+    if (user.password !== enterUser.password) {
+      Swal.fire({
+        icon: "error",
+        title: "",
+        text: "La contrasena es incorrecta. Intentalo otra vez",
+      });
       return
     }
+
 
     authStore.login(user)
 

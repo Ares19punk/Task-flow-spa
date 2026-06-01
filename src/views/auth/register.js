@@ -1,7 +1,7 @@
-import { crearUsuario } from "../../services/users.service"
-
-export function renderRegister(){
-    return `
+import { crearUsuario, obtenerUsuarioEmail } from "../../services/users.service"
+import { renderRouter } from "../../router/router"
+export function renderRegister() {
+  return `
   <body class="min-h-screen bg-gradient-to-b from-sky-50 via-white to-blue-100 text-slate-800">
     <main class="grid min-h-screen lg:grid-cols-[0.95fr_1.05fr]">
       <section class="hidden border-r border-blue-100 bg-blue-600 p-10 text-white lg:flex lg:flex-col lg:justify-between">
@@ -30,34 +30,34 @@ export function renderRegister(){
             <div class="grid gap-5 md:grid-cols-2">
               <div>
                 <label class="mb-2 block text-sm font-medium text-slate-700" for="register-name">Nombre</label>
-                <input id="register-name" type="text" placeholder="Ana" class="w-full rounded-2xl border border-blue-100 bg-blue-50 px-4 py-3 text-slate-900 placeholder:text-slate-400 focus:border-blue-400 focus:outline-none" />
+                <input required id="register-name" type="text" placeholder="Ana" class="w-full rounded-2xl border border-blue-100 bg-blue-50 px-4 py-3 text-slate-900 placeholder:text-slate-400 focus:border-blue-400 focus:outline-none" />
               </div>
               <div>
                 <label class="mb-2 block text-sm font-medium text-slate-700" for="register-lastname">Apellido</label>
-                <input id="register-lastname" type="text" placeholder="Torres" class="w-full rounded-2xl border border-blue-100 bg-blue-50 px-4 py-3 text-slate-900 placeholder:text-slate-400 focus:border-blue-400 focus:outline-none" />
+                <input required id="register-lastname" type="text" placeholder="Torres" class="w-full rounded-2xl border border-blue-100 bg-blue-50 px-4 py-3 text-slate-900 placeholder:text-slate-400 focus:border-blue-400 focus:outline-none" />
               </div>
             </div>
 
             <div>
               <label class="mb-2 block text-sm font-medium text-slate-700" for="register-email">Correo</label>
-              <input id="register-email" type="email" placeholder="usuario@taskflow.com" class="w-full rounded-2xl border border-blue-100 bg-blue-50 px-4 py-3 text-slate-900 placeholder:text-slate-400 focus:border-blue-400 focus:outline-none" />
+              <input required id="register-email" type="email" placeholder="usuario@taskflow.com" class="w-full rounded-2xl border border-blue-100 bg-blue-50 px-4 py-3 text-slate-900 placeholder:text-slate-400 focus:border-blue-400 focus:outline-none" />
             </div>
 
             <div class="grid gap-5 md:grid-cols-2">
               <div>
                 <label class="mb-2 block text-sm font-medium text-slate-700" for="register-password">Contrasena</label>
-                <input id="register-password" type="password" placeholder="Crea una contrasena" class="w-full rounded-2xl border border-blue-100 bg-blue-50 px-4 py-3 text-slate-900 placeholder:text-slate-400 focus:border-blue-400 focus:outline-none" />
+                <input required id="register-password" type="password" placeholder="Crea una contrasena" class="w-full rounded-2xl border border-blue-100 bg-blue-50 px-4 py-3 text-slate-900 placeholder:text-slate-400 focus:border-blue-400 focus:outline-none" />
               </div>
               <div>
                 <label class="mb-2 block text-sm font-medium text-slate-700" for="register-role">Rol</label>
-                <select id="register-role" class="w-full rounded-2xl border border-blue-100 bg-blue-50 px-4 py-3 text-slate-900 focus:border-blue-400 focus:outline-none">
+                <select required id="register-role" class="w-full rounded-2xl border border-blue-100 bg-blue-50 px-4 py-3 text-slate-900 focus:border-blue-400 focus:outline-none">
                   <option>USER</option>
                   <option>ADMIN</option>
                 </select>
               </div>
             </div>
 
-            <button type="submit" class="inline-flex items-center justify-center rounded-2xl bg-blue-600 px-5 py-3 text-sm font-bold text-white hover:bg-blue-500" href="/login" data-link>
+            <button type="submit" class="inline-flex items-center justify-center rounded-2xl bg-blue-600 px-5 py-3 text-sm font-bold text-white hover:bg-blue-500" data-link>
               Registrarme
             </button>
           </form>
@@ -68,30 +68,48 @@ export function renderRegister(){
 `
 }
 
-export function setupRegister(){
-  const form = document.getElementById("register-form")
-  const nombre = document.getElementById("register-name")
-  const apellido = document.getElementById("register-lastname")
-  const correo = document.getElementById("register-email")
-  const contrasena = document.getElementById("register-password") 
-  const role = document.getElementById("register-role")
+export function setupRegister() {
 
-  form.addEventListener("submit",async function(event){
+  const registerForm = document.getElementById("register-form")
+
+  const registerName = document.getElementById("register-name")
+  const registerLast = document.getElementById("register-lastname")
+  const registerEmail = document.getElementById("register-email")
+  const registerPassword = document.getElementById("register-password")
+  const registerRole = document.getElementById("register-role")
+
+  registerForm.addEventListener("submit", async function (event) {
     event.preventDefault()
-    console.log("click")
-    const newUser = {
-      name : nombre.value,
-      lastname : apellido.value,
-      email: correo.value,
-      password: contrasena.value,
-      roles: [role.value]
+
+    const registerUser = {
+      "name": registerName.value,
+      "lastName": registerLast.value,
+      "email": registerEmail.value,
+      "password": registerPassword.value,
+      "roles": [
+        registerRole.value
+      ]
     }
 
-    const response = await crearUsuario(newUser)
-    if(response){
-      alert("Usuario creado exitosamente.")
+    const usuarioExiste = await obtenerUsuarioEmail(registerUser.email)
+
+
+
+    if (usuarioExiste !== null) {
+      alert("El correo existe. Prueba con otro.")
+      return
     }
+
+  
+
+    await crearUsuario(registerUser)
+
+    
+
+    window.history.pushState({}, "", "/dashboard")
+    renderRouter()
+
+    
+    
   })
-
-  return true
 }

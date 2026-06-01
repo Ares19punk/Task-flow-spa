@@ -17,8 +17,7 @@ export function renderRouter(){
     if(route.setup){
         route.setup()
     }
-
-
+    
 }
 
 export function initRouter(){
