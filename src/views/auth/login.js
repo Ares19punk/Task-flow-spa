@@ -1,3 +1,7 @@
+import { renderRouter } from "../../router/router"
+import { obtenerUsuarioEmail } from "../../services/users.service"
+import {authStore} from "../../store/authstore"
+
 export function renderLogin(){
     return `
   <body class="min-h-screen bg-gradient-to-b from-sky-50 via-white to-blue-100 text-slate-800">
@@ -15,25 +19,25 @@ export function renderLogin(){
             <p class="mt-4 text-slate-600">Ingresa a tu espacio de trabajo y continua organizando tus tareas.</p>
           </div>
 
-          <form class="mt-8 grid gap-5">
+          <form id="formLogin" class="mt-8 grid gap-5">
             <div>
               <label class="mb-2 block text-sm font-medium text-slate-700" for="email">Correo</label>
-              <input id="email" type="email" placeholder="usuario@taskflow.com" class="w-full rounded-2xl border border-blue-100 bg-blue-50 px-4 py-3 text-slate-900 placeholder:text-slate-400 focus:border-blue-400 focus:outline-none" />
+              <input id="email" type="email" required placeholder="usuario@taskflow.com" class="w-full rounded-2xl border border-blue-100 bg-blue-50 px-4 py-3 text-slate-900 placeholder:text-slate-400 focus:border-blue-400 focus:outline-none" />
             </div>
             <div>
               <label class="mb-2 block text-sm font-medium text-slate-700" for="password">Contrasena</label>
-              <input id="password" type="password" placeholder="Ingresa tu contrasena" class="w-full rounded-2xl border border-blue-100 bg-blue-50 px-4 py-3 text-slate-900 placeholder:text-slate-400 focus:border-blue-400 focus:outline-none" />
+              <input id="password" type="password" required placeholder="Ingresa tu contrasena" class="w-full rounded-2xl border border-blue-100 bg-blue-50 px-4 py-3 text-slate-900 placeholder:text-slate-400 focus:border-blue-400 focus:outline-none" />
             </div>
-            <a class="inline-flex items-center justify-center rounded-2xl bg-blue-600 px-5 py-3 text-sm font-bold text-white hover:bg-blue-500" href="/dashboard" data-link>
+            <button type="submit" class="inline-flex items-center justify-center rounded-2xl bg-blue-600 px-5 py-3 text-sm font-bold text-white hover:bg-blue-500">
               Entrar al dashboard
-            </a>
+            </button>
           </form>
         </div>
       </section>
 
       <section class="hidden bg-blue-600 p-10 text-white lg:flex lg:flex-col lg:justify-center">
         <div class="mx-auto max-w-lg">
-          <p class="text-sm font-semibold uppercase tracking-[0.3em] text-blue-100">TaskFlowSPA</p>
+          <a class="text-sm font-semibold uppercase tracking-[0.3em] text-blue-100">TaskFlowSPA</a>
           <h2 class="mt-4 text-5xl font-black tracking-tight">Una experiencia limpia para aprender una primera SPA.</h2>
           <ul class="mt-8 space-y-4 text-lg leading-8 text-blue-50">
             <li>Autenticacion simplificada con localStorage.</li>
@@ -43,6 +47,40 @@ export function renderLogin(){
         </div>
       </section>
     </main>
-    <script type="module" src="../main.js"></script>
   </body>`
 }
+
+export function setupLogin(){
+  const loginForm = document.getElementById("formLogin")
+  const email = document.getElementById("email")
+  const password = document.getElementById("password")
+
+  loginForm.addEventListener("submit", async function(event){
+    event.preventDefault()
+
+    const enterUser = {
+      "email" : email.value,
+      "password" : password.value
+    }
+
+    const user = await obtenerUsuarioEmail(enterUser.email)
+
+  
+    if(user === null){
+      alert("El correo no existe. Vuelve a intentar.")
+      return
+    }
+
+    if(user.password !== enterUser.password){
+      alert("La contrasena es incorrecta. Intentalo otra vez  ")
+      return
+    }
+
+    authStore.login(user)
+
+    window.history.pushState({}, "", "/dashboard")
+    renderRouter()
+
+  })
+}
+

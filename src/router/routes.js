@@ -1,5 +1,5 @@
 import { renderizarHome } from "../views/home";
-import { renderLogin } from "../views/auth/login";
+import { renderLogin, setupLogin } from "../views/auth/login";
 import { renderRegister, setupRegister } from "../views/auth/register";
 import { renderizarDashboard } from "../views/app/dashboard";
 import { renderProfile } from "../views/auth/profile";
@@ -15,7 +15,7 @@ export const routes = {
     },
     "/login": {
         render: renderLogin,
-        setup: "",
+        setup: setupLogin,
         isPublic: true,
         redirectIfAuthenticated: true
 

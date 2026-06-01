@@ -33,3 +33,17 @@ export async function obtenerUsuario(id) {
     return usuario
     
 }
+
+export async function obtenerUsuarioEmail(email) {
+    const response = await fetch(`http://localhost:3000/users?email=${email}`)
+    if(!response){
+        throw new Error("Error al consultar el usuario.")
+    }
+
+    const usuario = await response.json()
+    if(usuario.length === 0){
+        return null
+    }
+
+    return usuario[0]
+}

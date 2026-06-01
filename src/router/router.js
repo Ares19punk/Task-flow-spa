@@ -14,8 +14,6 @@ export function renderRouter(){
 
     app.innerHTML = route.render()
 
-    route.setup()
-
     if(route.setup){
         route.setup()
     }
