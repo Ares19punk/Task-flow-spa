@@ -28,23 +28,28 @@ export const routes = {
     },
     "/dashboard": {
         render: renderizarDashboard,
-        setup: null
+        setup: null,
+        isPublic: false
     },
     "/profile": {
         render: renderProfile,
-        setup: null
+        setup: null,
+        isPublic: false
     },
     "/admin": {
         render: renderAdmin,
-        setup: null
+        setup: null,
+        isPublic: false
     },
     "/task-form": {
         render: renderTaskForm,
-        setup: null
+        setup: null,
+        isPublic: false
     },
     "/tasks": {
         render: renderTask,
-        setup: null
+        setup: null,
+        isPublic: false
     }
 }
 

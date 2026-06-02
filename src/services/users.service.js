@@ -48,3 +48,17 @@ export async function obtenerUsuarioEmail(email) {
     return usuario[0]
 }
 
+export async function obtenerTareasUsuario(id) {
+    const response = await fetch(`http://localhost:3000/tasks?userid=${id}`)
+    if(!response){
+        throw new Error("Error al consultar el usuario.")
+    }
+
+    const usuario = await response.json()
+    if(usuario.length === 0){
+        return null
+    }
+
+    return usuario
+}
+

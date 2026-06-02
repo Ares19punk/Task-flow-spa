@@ -1,3 +1,4 @@
+import { authStore } from "../store/authstore"
 import { notFoundView, routes} from "./routes"
 
 
@@ -10,13 +11,37 @@ export function renderRouter(){
 
     const currentPath = window.location.pathname
 
-    const route = routes[currentPath] ?? {render: notFoundView}
+    const route = routes[currentPath] ?? {render: notFoundView , isPublic: true}
 
-    if
+    if(!route.isPublic && !authStore.isAuthenticated()){
+        alert("Debe iniciar sección.")
+
+        window.history.pushState({},"","/login")
+        const loginRoute = routes["/login"]
+        app.innerHTML = loginRoute.render()
+
+        if(loginRoute.setup){
+            loginRoute.setup()
+        }
+        return
+    }
+
+    if(authStore.isAuthenticated() && route.redirectIfAuthenticated === true){
+        alert("Debe iniciar sección.")
+
+        window.history.pushState({},"","/dashboard")
+        const dashboardRoute = routes["/dashboard"]
+        app.innerHTML = dashboardRoute.render()
+
+        if(dashboardRoute.setup){
+            dashboardRoute.setup()
+        }
+        return
+    }
 
     app.innerHTML = route.render()
-
-    if(route.setup){
+    
+    if (route.setup) {
         route.setup()
     }
     

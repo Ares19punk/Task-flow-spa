@@ -6,7 +6,7 @@ export const authStore = {
         localStorage.setItem("currentUser", JSON.stringify(user))
     },
     logout(){
-        this.currentUser = null,
+        this.currentUser = null
         localStorage.removeItem("currentUser")
     },
     isAuthenticated(){

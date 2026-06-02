@@ -1,3 +1,5 @@
+import { setupLogin } from "../auth/login"
+
 export function renderizarDashboard(){
     return `
   <body class="min-h-screen bg-sky-50 text-slate-800">
@@ -57,7 +59,8 @@ export function renderizarDashboard(){
     </main>
   </body>`
 }
-
 export function setupDashboard(){
   
+  
+
 }
