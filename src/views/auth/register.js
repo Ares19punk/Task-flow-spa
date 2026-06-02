@@ -1,5 +1,6 @@
 import { crearUsuario, obtenerUsuarioEmail } from "../../services/users.service"
 import { renderRouter } from "../../router/router"
+import { authStore } from "../../store/authstore"
 export function renderRegister() {
   return `
   <body class="min-h-screen bg-gradient-to-b from-sky-50 via-white to-blue-100 text-slate-800">
@@ -57,7 +58,7 @@ export function renderRegister() {
               </div>
             </div>
 
-            <button type="submit" class="inline-flex items-center justify-center rounded-2xl bg-blue-600 px-5 py-3 text-sm font-bold text-white hover:bg-blue-500" data-link>
+            <button type="submit" class="inline-flex items-center justify-center rounded-2xl bg-blue-600 px-5 py-3 text-sm font-bold text-white hover:bg-blue-500">
               Registrarme
             </button>
           </form>
@@ -82,9 +83,9 @@ export function setupRegister() {
     event.preventDefault()
 
     const registerUser = {
-      "name": registerName.value,
-      "lastName": registerLast.value,
-      "email": registerEmail.value,
+      "name": registerName.value.trim(),
+      "lastName": registerLast.value.trim(),
+      "email": registerEmail.value.trim(),
       "password": registerPassword.value,
       "roles": [
         registerRole.value
@@ -104,12 +105,9 @@ export function setupRegister() {
 
     await crearUsuario(registerUser)
 
-    
+    authStore.login(registerUser)
 
     window.history.pushState({}, "", "/dashboard")
     renderRouter()
-
-    
-    
   })
 }

@@ -16,3 +16,4 @@ export const authStore = {
         return this.currentUser
     }
 }
+
