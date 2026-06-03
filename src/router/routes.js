@@ -4,8 +4,8 @@ import { renderRegister, setupRegister } from "../views/auth/register";
 import { renderizarDashboard } from "../views/app/dashboard";
 import { renderProfile } from "../views/auth/profile";
 import { renderAdmin } from "../views/admin/admin";
-import { renderTaskForm } from "../views/tasks/task-form";
-import { renderTask } from "../views/tasks/tasks";
+import { renderTaskForm, setupTaskForm } from "../views/tasks/task-form";
+import { renderTask, setupTask } from "../views/tasks/tasks";
 import { renderNotFound } from "../views/not-found";
 
 export const routes = {
@@ -43,12 +43,12 @@ export const routes = {
     },
     "/task-form": {
         render: renderTaskForm,
-        setup: null,
+        setup: setupTaskForm,
         isPublic: false
     },
     "/tasks": {
         render: renderTask,
-        setup: null,
+        setup: setupTask,
         isPublic: false
     }
 }

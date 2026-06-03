@@ -27,7 +27,6 @@ export function renderRouter(){
     }
 
     if(authStore.isAuthenticated() && route.redirectIfAuthenticated === true){
-        alert("Debe iniciar sección.")
 
         window.history.pushState({},"","/dashboard")
         const dashboardRoute = routes["/dashboard"]
