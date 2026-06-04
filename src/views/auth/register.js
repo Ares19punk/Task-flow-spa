@@ -101,11 +101,10 @@ export function setupRegister() {
       return
     }
 
-  
+    const usuarioCreado = await crearUsuario(registerUser)
 
-    await crearUsuario(registerUser)
 
-    authStore.login(registerUser)
+    authStore.login(usuarioCreado)
 
     window.history.pushState({}, "", "/dashboard")
     renderRouter()

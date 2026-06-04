@@ -1,7 +1,7 @@
 import { renderizarHome } from "../views/home";
 import { renderLogin, setupLogin } from "../views/auth/login";
 import { renderRegister, setupRegister } from "../views/auth/register";
-import { renderizarDashboard } from "../views/app/dashboard";
+import { renderizarDashboard, setupDashboard } from "../views/app/dashboard";
 import { renderProfile } from "../views/auth/profile";
 import { renderAdmin } from "../views/admin/admin";
 import { renderTaskForm, setupTaskForm } from "../views/tasks/task-form";
@@ -28,7 +28,7 @@ export const routes = {
     },
     "/dashboard": {
         render: renderizarDashboard,
-        setup: null,
+        setup: setupDashboard,
         isPublic: false
     },
     "/profile": {

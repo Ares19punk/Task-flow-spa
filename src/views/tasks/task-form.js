@@ -76,9 +76,8 @@ export function setupTaskForm() {
     const newTask = {
       "title": title.value.trim(),
       "descripcion": description.value.trim(),
-      "status": [
-        status.value
-      ],
+      "status": 
+        status.value,
       "date": date.value,
       "userid": currentUser.id,
     }
