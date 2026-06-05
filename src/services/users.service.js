@@ -48,5 +48,22 @@ export async function obtenerUsuarioEmail(email) {
     return usuario[0]
 }
 
+export async function actualizarUsuario(id, usuarioEditado) {
+    try{
+        const response = await fetch(`http://localhost:3000/users/${id}`, {
+            method: "PUT",
+            headers: {
+                "content-type":"application/json"
+            },
+            body: JSON.stringify(usuarioEditado)
+        })
+
+        const usuarioActualizado = await response.json()
+        return usuarioActualizado
+    }catch(error){
+        console.error("Error de conexion.", error)
+        alert("No se puede conectar con el servidor")
+    }
+}
 
 

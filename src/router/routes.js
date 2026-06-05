@@ -2,8 +2,8 @@ import { renderizarHome } from "../views/home";
 import { renderLogin, setupLogin } from "../views/auth/login";
 import { renderRegister, setupRegister } from "../views/auth/register";
 import { renderizarDashboard, setupDashboard } from "../views/app/dashboard";
-import { renderProfile } from "../views/auth/profile";
-import { renderAdmin } from "../views/admin/admin";
+import { renderProfile, setupProfile } from "../views/auth/profile";
+import { renderAdmin, setupAdmin } from "../views/admin/admin";
 import { renderTaskForm, setupTaskForm } from "../views/tasks/task-form";
 import { renderTask, setupTask } from "../views/tasks/tasks";
 import { renderNotFound } from "../views/not-found";
@@ -33,12 +33,12 @@ export const routes = {
     },
     "/profile": {
         render: renderProfile,
-        setup: null,
+        setup: setupProfile,
         isPublic: false
     },
     "/admin": {
         render: renderAdmin,
-        setup: null,
+        setup: setupAdmin,
         isPublic: false
     },
     "/task-form": {

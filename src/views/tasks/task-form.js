@@ -1,5 +1,5 @@
 import { renderRouter } from "../../router/router"
-import { crearTarea } from "../../services/task.service"
+import { crearTarea, editarTarea, obtenerTarea } from "../../services/task.service"
 import { authStore } from "../../store/authstore"
 
 export function renderTaskForm() {
@@ -50,7 +50,7 @@ export function renderTaskForm() {
 
           <div class="flex flex-col gap-3 pt-2 sm:flex-row">
             <button type="submit" class="inline-flex items-center justify-center rounded-2xl bg-blue-600 px-5 py-3 text-sm font-bold text-white hover:bg-blue-500">Guardar tarea</button>
-            <a class="inline-flex items-center justify-center rounded-2xl border border-blue-200 bg-white px-5 py-3 text-sm font-bold text-blue-700 hover:bg-blue-50" href="/tasks" data-link>Cancelar</a>
+            <a id="cancelar" class="inline-flex items-center justify-center rounded-2xl border border-blue-200 bg-white px-5 py-3 text-sm font-bold text-blue-700 hover:bg-blue-50" href="/tasks" data-link>Cancelar</a>
           </div>
         </form>
       </section>
@@ -59,8 +59,8 @@ export function renderTaskForm() {
 `
 }
 
-export function setupTaskForm() {
-
+export async function setupTaskForm() {
+  const cancelar = document.getElementById("cancelar")
   const formTask = document.getElementById("formTask")
 
   const title = document.getElementById("title")
@@ -69,6 +69,17 @@ export function setupTaskForm() {
   const date = document.getElementById("date")
 
   const currentUser = authStore.getUser()
+
+  const taskEditarId = localStorage.getItem("taskEditar")
+
+  if(taskEditarId){
+    const taskEditar = await obtenerTarea(taskEditarId)
+
+    title.value = taskEditar.title
+    description.value = taskEditar.descripcion
+    status.value = taskEditar.status
+    date.value = taskEditar.date
+  }
 
   formTask.addEventListener("submit", async function (event) {
     event.preventDefault()
@@ -82,10 +93,19 @@ export function setupTaskForm() {
       "userid": currentUser.id,
     }
 
-    await crearTarea(newTask)
+    if(taskEditarId){
+      await editarTarea(taskEditarId, newTask)
+      localStorage.removeItem("taskEditar")
+    }else{
+      await crearTarea(newTask)
+    }
 
     window.history.pushState({}, "", "/tasks")
     renderRouter()
+  })
+
+  cancelar.addEventListener("click", function(){
+    localStorage.removeItem("taskEditar")
   })
 
 

@@ -1,3 +1,6 @@
+import { traerTareas } from "../../services/task.service"
+import { traerUsuarios } from "../../services/users.service"
+
 export function renderAdmin() {
     return `
   <body class="min-h-screen bg-sky-50 text-slate-800">
@@ -24,45 +27,99 @@ export function renderAdmin() {
         <article class="rounded-3xl border border-blue-100 bg-white p-6 shadow-lg shadow-blue-50">
           <h2 class="text-xl font-bold text-slate-900">Acciones rapidas</h2>
           <div class="mt-5 grid gap-4">
-            <a class="rounded-2xl bg-blue-50 px-5 py-4 text-sm font-semibold text-blue-700 hover:bg-blue-100" href="/admin" data-link>Gestionar usuarios</a>
-            <a class="rounded-2xl bg-blue-50 px-5 py-4 text-sm font-semibold text-blue-700 hover:bg-blue-100" href="/tasks" data-link>Ver todas las tareas</a>
+            <button id="btnUsuarios" type="button" class="rounded-2xl bg-blue-50 px-5 py-4 text-sm font-semibold text-blue-700 hover:bg-blue-100 text-start">Gestionar usuarios</button>
+            <button id="btnTareas" type="button" class="rounded-2xl bg-blue-50 px-5 py-4 text-sm font-semibold text-blue-700 hover:bg-blue-100 text-start">Ver todas las tareas</button>
             <a class="rounded-2xl bg-blue-50 px-5 py-4 text-sm font-semibold text-blue-700 hover:bg-blue-100" href="/dashboard" data-link>Volver al dashboard</a>
           </div>
         </article>
 
-        <article class="rounded-3xl border border-blue-100 bg-white p-6 shadow-lg shadow-blue-50">
-          <div class="flex items-center justify-between">
-            <h2 class="text-xl font-bold text-slate-900">Usuarios</h2>
-            <span class="rounded-full bg-blue-100 px-3 py-1 text-xs font-semibold uppercase tracking-[0.25em] text-blue-700">Mockup</span>
-          </div>
-          <div class="mt-5 space-y-4">
-            <div class="rounded-2xl bg-blue-50 p-4">
-              <div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-                <div>
-                  <p class="font-bold text-slate-900">Ana Torres</p>
-                  <p class="text-sm text-slate-500">ana@taskflow.com</p>
-                </div>
-                <div class="flex gap-2">
-                  <span class="rounded-full bg-white px-3 py-1 text-xs font-bold text-blue-700">USER</span>
-                  <a class="rounded-full border border-blue-200 px-3 py-1 text-xs font-semibold text-blue-700 hover:bg-white" href="/admin" data-link>Editar rol</a>
-                </div>
-              </div>
-            </div>
-            <div class="rounded-2xl bg-blue-50 p-4">
-              <div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-                <div>
-                  <p class="font-bold text-slate-900">Carlos Ruiz</p>
-                  <p class="text-sm text-slate-500">carlos@taskflow.com</p>
-                </div>
-                <div class="flex gap-2">
-                  <span class="rounded-full bg-white px-3 py-1 text-xs font-bold text-blue-700">ADMIN</span>
-                  <a class="rounded-full border border-blue-200 px-3 py-1 text-xs font-semibold text-blue-700 hover:bg-white" href="/admin" data-link>Editar rol</a>
-                </div>
-              </div>
-            </div>
-          </div>
-        </article>
+        <section class="rounded-3xl border border-blue-100 bg-white p-6 shadow-lg shadow-blue-50">
+          
+          <article id="contentAdmin">
+            <h2 class="text-xl font-bold text-slate-900 text-center">¿Que acción rapida desea validar?</h2>
+          </article>
+          
+        </section>
       </section>
     </main>
   </body>`
+}
+
+export function setupAdmin(){
+  const btnUsuarios = document.getElementById("btnUsuarios")
+  const btnTareas = document.getElementById("btnTareas")
+
+  const contentElements = document.getElementById("contentElements")
+  const contentUsers = document.getElementById("contentAdmin")
+
+  btnUsuarios.addEventListener("click", async function(event){
+    event.preventDefault()
+
+    let htmlUsers = `<div class="flex items-center justify-between">
+            <h2 class="text-xl font-bold text-slate-900">Usuarios</h2>
+            <span class="rounded-full bg-blue-100 px-3 py-1 text-xs font-semibold uppercase tracking-[0.25em] text-blue-700">Mockup</span>
+          </div>`
+
+    const users = await traerUsuarios()
+
+    if(!users){
+      return
+    }
+
+    for (const user of users) {
+      htmlUsers += `<div class="mt-5 space-y-4">
+            <div class="rounded-2xl bg-blue-50 p-4">
+              <div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+                <div>
+                  <p class="font-bold text-slate-900">${user.name} ${user.lastName}</p>
+                  <p class="text-sm text-slate-500">${user.email}</p>
+                </div>
+                <div class="flex gap-2">
+                  <span class="rounded-full bg-white px-3 py-1 text-xs font-bold text-blue-700">${user.roles}</span>
+                  <a class="rounded-full border border-blue-200 px-3 py-1 text-xs font-semibold text-blue-700 hover:bg-white" href="/admin" data-link>Editar rol</a>
+                </div>
+              </div>
+            </div>`
+    }
+
+    contentUsers.innerHTML = htmlUsers
+  })
+
+  btnTareas.addEventListener("click", async function (event) {
+    event.preventDefault()
+    let htmlTasks = `<div class="flex items-center justify-between">
+            <h2 class="text-xl font-bold text-slate-900">Tareas de usuarios</h2>
+            <span class="rounded-full bg-blue-100 px-3 py-1 text-xs font-semibold uppercase tracking-[0.25em] text-blue-700">Mockup</span>
+          </div>`
+
+    const tasks = await traerTareas()
+
+    if(!tasks || tasks.length === 0){
+      contentUsers.innerHTML = ` <p class="font-bold text-slate-900">No hay tareas registradas.</p>`
+      return
+    }
+
+    for (const task of tasks) {
+      htmlTasks += `<br>
+      <article rounded-2xl bg-blue-50 p-4">
+        <div class="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
+          <div>
+            <p class="text-xs font-bold uppercase tracking-[0.25em] text-blue-600">${task.status}</p>
+            <h3 class="mt-2 font-bold text-slate-900">${task.title}</h3>
+          </div>
+          <div class="flex gap-2">
+            <button class="rounded-full border border-blue-200 px-3 py-1 text-xs font-semibold text-blue-700 hover:bg-white">
+              Ver
+            </button>
+            <button class="rounded-full border border-blue-200 px-3 py-1 text-xs font-semibold text-blue-700 hover:bg-white">
+              Eliminar
+            </button>
+          </div>
+        </div>
+      </article>`
+    }
+    contentUsers.innerHTML = htmlTasks
+  })
+
+  
 }

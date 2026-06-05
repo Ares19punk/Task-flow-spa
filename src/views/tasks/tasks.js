@@ -1,8 +1,10 @@
-import { obtenerTareasUsuario } from "../../services/task.service"
+import { renderRouter } from "../../router/router"
+import { eliminarTarea, obtenerTareasUsuario } from "../../services/task.service"
 import { authStore } from "../../store/authstore"
 
 export function renderTask() {
-    return `
+  const currentUser = authStore.getUser()
+  return `
   <body class="min-h-screen bg-sky-50 text-slate-800">
     <header class="border-b border-blue-100 bg-white/90 backdrop-blur">
       <div class="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
@@ -11,7 +13,7 @@ export function renderTask() {
           <a class="rounded-full px-4 py-2 text-sm font-semibold text-slate-600 hover:bg-blue-50 hover:text-blue-700" href="/dashboard" data-link>Dashboard</a>
           <a class="rounded-full bg-blue-600 px-4 py-2 text-sm font-semibold text-white" href="/tasks" data-link>Tareas</a>
           <a class="rounded-full px-4 py-2 text-sm font-semibold text-slate-600 hover:bg-blue-50 hover:text-blue-700" href="/profile" data-link>Perfil</a>
-          <a class="rounded-full px-4 py-2 text-sm font-semibold text-slate-600 hover:bg-blue-50 hover:text-blue-700" href="/admin" data-link>Admin</a>
+          ${currentUser.roles[0] === "ADMIN" ? `<a class="rounded-full px-4 py-2 text-sm font-semibold text-slate-600 hover:bg-blue-50 hover:text-blue-700" href="/admin" data-link>Admin</a>` : ""}
         </nav>
       </div>
     </header>
@@ -23,7 +25,7 @@ export function renderTask() {
           <h1 class="mt-3 text-4xl font-black tracking-tight">Mis tareas</h1>
           <p class="mt-4 max-w-2xl text-blue-50">Vista principal para listar, editar y eliminar las tareas del usuario autenticado.</p>
         </div>
-        <a class="inline-flex items-center justify-center rounded-2xl bg-white px-5 py-3 text-sm font-bold text-blue-700 hover:bg-blue-50" href="/task-form" data-link>
+        <a id="crear-tarea" class="inline-flex items-center justify-center rounded-2xl bg-white px-5 py-3 text-sm font-bold text-blue-700 hover:bg-blue-50" href="/task-form" data-link>
           Crear tarea
         </a>
       </section>
@@ -35,15 +37,19 @@ export function renderTask() {
   </body>`
 }
 
+export async function setupTask() {
 
-export async function setupTask(){
-
+  const crearTarea = document.getElementById("crear-tarea")
   const containerTask = document.getElementById("containerTask")
   let html = ""
 
   const userId = authStore.getUser()
 
   const tasks = await obtenerTareasUsuario(userId.id)
+
+  if (tasks === null) {
+    return
+  }
 
   for (const task of tasks) {
     html += `<article class="rounded-3xl border border-blue-100 bg-white p-6 shadow-lg shadow-blue-50">
@@ -54,15 +60,51 @@ export async function setupTask(){
               <p class="mt-3 max-w-2xl text-slate-600">${task.descripcion}</p>
             </div>
             <div class="flex gap-3">
-              <a class="rounded-full border border-blue-200 px-4 py-2 text-sm font-semibold text-blue-700 hover:bg-blue-50" href="/tasks/new" data-link>Editar</a>
-              <a class="rounded-full border border-blue-200 px-4 py-2 text-sm font-semibold text-blue-700 hover:bg-blue-50" href="/tasks" data-link>Eliminar</a>
+              <button data-id="${task.id}" class="btn-editar rounded-full border border-blue-200 px-4 py-2 text-sm font-semibold text-blue-700 hover:bg-blue-50">Editar</button>
+              <button data-id="${task.id}" class="btn-Eliminar rounded-full border border-blue-200 px-4 py-2 text-sm font-semibold text-blue-700 hover:bg-blue-50">Eliminar</button>
             </div>
           </div>
-        </article>` 
+        </article>`
   }
 
-
   containerTask.innerHTML = html
-  
+
+  containerTask.addEventListener("click", async function (event) {
+    const deleteTask = event.target.closest(".btn-Eliminar, .btn-editar")
+
+    if (!deleteTask) {
+      return
+    }
+
+    if (deleteTask.classList.contains("btn-Eliminar")) {
+      const idTask = deleteTask.dataset.id
+
+      const validacion = await eliminarTarea(idTask)
+
+      if (!validacion) {
+        return
+      }
+
+      renderRouter()
+    }
+
+    if (deleteTask.classList.contains("btn-editar")) {
+      const idTask = deleteTask.dataset.id
+
+      localStorage.setItem("taskEditar", idTask)
+
+      window.history.pushState({},"","/task-form")
+      renderRouter()
+    }
+
+
+  })
+
+  crearTarea.addEventListener("click", function(){
+    localStorage.removeItem("taskEditar")
+  })
+
+
+
 
 }
