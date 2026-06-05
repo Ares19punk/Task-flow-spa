@@ -7,7 +7,7 @@ export async function crearTarea(tarea) {
         body: JSON.stringify(tarea)
     });
     
-    if(!response){
+    if(!response.ok){
         throw new Error("Error al crear la tarea.")
     }
 

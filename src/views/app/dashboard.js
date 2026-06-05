@@ -85,7 +85,7 @@ export function renderizarDashboard() {
             <a class="text-sm font-semibold text-blue-700 hover:text-blue-600" href="/tasks" data-link>Ver tareas</a>
           </div>
           <div class="mt-6 grid gap-4 sm:grid-cols-2">
-            <a class="rounded-3xl bg-blue-50 p-5 hover:bg-blue-100" href="/task-form" data-link>
+            <a id="crearTareaDash" class="rounded-3xl bg-blue-50 p-5 hover:bg-blue-100" href="/task-form" data-link>
               <p class="text-sm font-semibold text-blue-600">Crear</p>
               <h3 class="mt-2 text-lg font-bold text-slate-900">Nueva tarea</h3>
             </a>
@@ -101,7 +101,15 @@ export function renderizarDashboard() {
 }
 export async function setupDashboard() {
 
+  const crearTareaDash = document.getElementById("crearTareaDash")
   const logout = document.getElementById("logout")
+
+  if(crearTareaDash){
+    crearTareaDash.addEventListener("click", function(event){
+      localStorage.removeItem("taskEditar")
+  })
+  }
+  
 
   logout.addEventListener("click", function (event) {
     event.preventDefault()
