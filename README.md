@@ -1,203 +1,263 @@
-# TaskFlowSPA
+# TaskFlow SPA
 
-TaskFlowSPA es una aplicacion web tipo SPA (Single Page Application) construida con JavaScript Vanilla, HTML, CSS y Tailwind CSS. Su objetivo es simular un sistema moderno de gestion de tareas y productividad mientras sirve como base practica para aprender arquitectura frontend sin depender de frameworks como React, Vue o Angular.
+TaskFlow SPA is a Single Page Application built with Vanilla JavaScript, HTML, CSS, Tailwind CSS, Vite, and JSON Server. The project simulates a small productivity and task management system where users can register, log in, manage their own tasks, update their profile, and access different views depending on their role.
 
-La aplicacion usara routing del lado del cliente con History API para navegar entre vistas sin recargar toda la pagina, integrando autenticacion, autorizacion por roles, proteccion de rutas, renderizado dinamico y persistencia de datos con un backend fake basado en `json-server`.
+This application was created as a performance test project to practice modern frontend concepts without using frameworks such as React, Vue, or Angular. The main goal is to understand how a SPA works internally through client-side routing, dynamic rendering, modular code organization, authentication state, route protection, and communication with a fake REST API.
 
-Para simplificar la autenticacion en esta primera SPA, la sesion activa del usuario se manejara con `localStorage`, mientras que `json-server` se utilizara para los datos persistentes del sistema.
+## Project Purpose
 
-## Objetivo del proyecto
+The purpose of TaskFlow SPA is to provide a simple but functional task management platform. Users can create and organize tasks, while administrators can access a management area with broader visibility over the system.
 
-Este proyecto esta pensado para practicar fundamentos clave del desarrollo frontend moderno:
+The project focuses on the following learning objectives:
 
-- Routing SPA.
-- Arquitectura frontend modular.
-- Separacion de responsabilidades.
-- Manejo de estado basico.
-- Guards y proteccion de rutas.
-- Reutilizacion de componentes.
-- Escalabilidad en Vanilla JS.
+- Build a SPA using Vanilla JavaScript.
+- Implement navigation without full page reloads.
+- Organize frontend code using a layered architecture.
+- Manage authentication state with `localStorage`.
+- Protect private routes based on authentication.
+- Consume data from a fake backend using `json-server`.
+- Separate responsibilities between views, services, routing, store, and utilities.
 
-## Tipo de arquitectura
+## Main Features
 
-Este proyecto usara una arquitectura frontend simple por capas (`layered architecture`) adaptada a una SPA en JavaScript Vanilla.
+- Home page with general information about the application.
+- User registration.
+- User login and logout.
+- Persistent session using `localStorage`.
+- Protected routes for authenticated users.
+- Automatic redirect for authenticated users trying to access login or register pages.
+- Dashboard view for logged-in users.
+- Profile view where users can manage their account information.
+- Task list view.
+- Task creation and editing form.
+- Task deletion.
+- Admin view for users with an administrator role.
+- Custom 404 page for routes that do not exist.
+- Data persistence through JSON Server.
 
-La idea es separar la aplicacion por responsabilidades para que sea mas facil de aprender, mantener y escalar poco a poco:
+## Technologies Used
 
-- `main.js` como punto de arranque.
-- `router/` para la navegacion SPA.
-- `views/` para las pantallas principales.
-- `components/` para piezas reutilizables.
-- `services/` para datos, sesion y comunicacion con el backend fake.
-- `utils/` para funciones auxiliares.
-- `styles/` para estilos globales y apoyo visual.
-
-Esta decision busca que el equipo entienda primero como funciona una SPA antes de pasar a arquitecturas mas avanzadas o mas modulares por dominio.
-
-## Stack principal
-
-- JavaScript Vanilla
+- Vanilla JavaScript
 - HTML5
 - CSS3
 - Tailwind CSS
 - Vite
-- JSON Server como backend fake
+- JSON Server
+- SweetAlert2
+- Browser `localStorage`
+- Fetch API
+- History API
 
-## Funcionalidades previstas
+## Architecture
 
-- Inicio de sesion y cierre de sesion.
-- Manejo de sesion del usuario.
-- Rutas publicas y privadas.
-- Sistema de roles y permisos.
-- Navegacion SPA con `History API`.
-- Renderizado dinamico de vistas.
-- Componentes reutilizables.
-- CRUD completo de tareas.
-- Edicion de perfil del usuario autenticado.
-- Eliminacion de la propia cuenta por parte del usuario autenticado.
-- Dashboard principal con estadisticas basicas.
-- Panel administrativo para usuarios `ADMIN`.
-- Consumo de datos desde un backend fake con `json-server`.
-
-## Roles iniciales
-
-### `ADMIN`
-
-- Puede gestionar usuarios.
-- Puede visualizar todas las tareas.
-- Puede modificar roles y permisos.
-- Tiene acceso completo al sistema.
-
-### `USER`
-
-- Puede crear, editar y eliminar sus propias tareas.
-- Puede visualizar solo la informacion relacionada con su cuenta.
-- Puede editar su propio perfil.
-- Puede eliminar su propia cuenta.
-
-## Alcance funcional esperado
-
-La SPA deberia incluir, como minimo, los siguientes modulos o vistas:
-
-- `Login`
-- `Dashboard`
-- `Mis tareas`
-- `Mi perfil`
-- `Detalle o formulario de tarea`
-- `Administracion de usuarios` solo para `ADMIN`
-- `Pagina 404`
-
-## Estructura sugerida
-
-La estructura inicial del proyecto sera sencilla y progresiva:
+The project follows a simple layered frontend architecture. This structure helps keep the code organized and easier to maintain.
 
 ```text
 src/
   main.js
-  router/
-  views/
   components/
+  router/
   services/
-  utils/
+  store/
   styles/
+  utils/
+  views/
 ```
 
-### Principios de arquitectura
+### Folder Responsibilities
 
-- Cada modulo debe encargarse de una responsabilidad clara.
-- Las vistas no deben contener toda la logica de negocio.
-- El acceso al backend debe centralizarse en `services`.
-- La logica de permisos debe aislarse en el sistema de routing o en utilidades de autorizacion.
-- Los componentes compartidos deben ser reutilizables y faciles de identificar.
-- Las vistas deben apoyarse en Tailwind CSS para mantener consistencia visual y velocidad de construccion.
+- `main.js`: Application entry point. It loads global styles and initializes the router.
+- `router/`: Contains the SPA route definitions and the client-side routing logic.
+- `views/`: Contains the main screens of the application, such as login, register, dashboard, profile, tasks, admin, and not found pages.
+- `services/`: Contains functions that communicate with the JSON Server API.
+- `store/`: Contains the authentication store used to save, read, and remove the current user session.
+- `styles/`: Contains global styles and Tailwind CSS configuration usage.
+- `components/`: Intended for reusable UI components.
+- `utils/`: Intended for helper functions shared across the application.
 
-## Flujo general de navegacion
+## Available Routes
 
-1. El usuario entra a la aplicacion.
-2. Si no tiene sesion activa, ve la vista de `login`.
-3. Tras autenticarse, la sesion se guarda en `localStorage`.
-4. El router redirige segun su estado de sesion y permisos.
-5. Al recargar la app, la sesion se restaura desde `localStorage`.
-6. Las rutas administrativas validan autenticacion y rol `ADMIN`.
-7. Al cerrar sesion, los datos de sesion se eliminan del `localStorage`.
+| Route | Access | Description |
+| --- | --- | --- |
+| `/` | Public | Home page |
+| `/login` | Public | User login page |
+| `/register` | Public | User registration page |
+| `/dashboard` | Private | Main dashboard for authenticated users |
+| `/profile` | Private | Authenticated user profile page |
+| `/tasks` | Private | Task list page |
+| `/task-form` | Private | Task creation or editing form |
+| `/admin` | Private | Administration page |
 
-## Reglas de negocio base
+If a user tries to access a private route without being logged in, the application redirects them to `/login`. If an authenticated user tries to access `/login` or `/register`, the application redirects them to `/dashboard`.
 
-- Un `USER` solo puede manipular sus propias tareas.
-- Un `USER` solo puede editar su propio perfil.
-- Un `USER` puede eliminar su propia cuenta.
-- Un `ADMIN` puede ver y administrar todas las tareas y usuarios.
-- Las rutas privadas no deben renderizarse si no existe una sesion valida.
-- El estado de autenticacion debe persistirse de forma controlada en `localStorage`.
+## User Roles
 
-## Scripts disponibles
+The application works with two main roles:
 
-- `npm run dev`: levanta el entorno de desarrollo con Vite.
-- `npm run build`: genera la version de produccion.
-- `npm run preview`: sirve localmente el build generado.
+### ADMIN
 
-## Inicio rapido
+An administrator has access to the admin area and can manage broader system information.
 
-1. Instala dependencias:
+Main permissions:
+
+- Access the admin view.
+- View system users.
+- Have full visibility over the application data.
+
+### USER
+
+A regular user can access the main application features related to their own account.
+
+Main permissions:
+
+- Log in to the system.
+- View the dashboard.
+- Create tasks.
+- Edit tasks.
+- Delete tasks.
+- View and update their profile.
+
+## Data Model
+
+The fake backend uses a `database.json` file with two main collections:
+
+```json
+{
+  "users": [],
+  "tasks": []
+}
+```
+
+### Users
+
+Each user includes basic account information:
+
+- `id`
+- `name`
+- `lastName`
+- `email`
+- `password`
+- `roles`
+
+### Tasks
+
+Tasks are stored in the `tasks` collection. They are connected to users through a user identifier, allowing the application to display tasks that belong to a specific user.
+
+## Authentication Flow
+
+The authentication system is intentionally simple because the project is focused on frontend SPA fundamentals.
+
+1. The user enters their credentials on the login page.
+2. The application searches for the user in the JSON Server API.
+3. If the credentials are valid, the user is saved in `localStorage`.
+4. The router uses the stored session to validate access to private routes.
+5. When the user logs out, the session is removed from `localStorage`.
+
+This approach is useful for learning purposes, but it is not intended for production authentication.
+
+## API Endpoints
+
+The frontend consumes the following JSON Server resources:
+
+```text
+http://localhost:3000/users
+http://localhost:3000/tasks
+```
+
+Examples of operations used by the application:
+
+- `GET /users`
+- `GET /users?email=user@example.com`
+- `POST /users`
+- `PUT /users/:id`
+- `GET /tasks`
+- `GET /tasks?userid=:id`
+- `GET /tasks/:id`
+- `POST /tasks`
+- `PUT /tasks/:id`
+- `DELETE /tasks/:id`
+
+## Installation and Setup
+
+### 1. Clone or download the project
+
+Open the project folder in your code editor.
+
+### 2. Install frontend dependencies
+
+From the `Task-flow-spa` folder, run:
 
 ```bash
 npm install
 ```
 
-2. Inicia la app en desarrollo:
+### 3. Start the frontend development server
 
 ```bash
 npm run dev
 ```
 
-3. En paralelo, cuando se agregue el backend fake, inicia `json-server` con el archivo de datos definido para el proyecto.
+The application will run with Vite, usually at:
 
-## Backend fake
+```text
+http://localhost:5173
+```
 
-La persistencia de datos del sistema estara basada en `json-server`. La idea es simular recursos como:
+### 4. Start the fake backend
 
-- `users`
-- `tasks`
+From the backend folder that contains `database.json`, run JSON Server on port `3000`:
 
-Ejemplo de responsabilidades del backend fake:
+```bash
+npx json-server database.json --port 3000
+```
 
-- Consultar usuarios.
-- Validar credenciales de manera simulada.
-- Consultar y actualizar perfil del usuario autenticado.
-- Eliminar la cuenta del usuario autenticado.
-- Obtener tareas por usuario.
-- Crear, editar y eliminar tareas.
-- Permitir consultas globales para administracion.
+The API will be available at:
 
-## Manejo de sesion
+```text
+http://localhost:3000
+```
 
-Para mantener el proyecto simple y enfocado en el aprendizaje:
+## Available Scripts
 
-- `json-server` se usara para `users` y `tasks`.
-- `localStorage` se usara para guardar la sesion activa.
-- No se manejara una coleccion `sessions` en el backend fake como parte del flujo principal.
+Inside the frontend project, the following scripts are available:
 
-Esto permite practicar autenticacion SPA sin agregar complejidad innecesaria en esta primera etapa.
+```bash
+npm run dev
+```
 
-## Criterios tecnicos del proyecto
+Starts the development server.
 
-- No usar frameworks SPA.
-- Mantener una arquitectura simple por capas desde el inicio.
-- Evitar mezclar DOM, reglas de negocio y acceso a datos en un mismo archivo.
-- Priorizar codigo legible, escalable y facil de mantener.
+```bash
+npm run build
+```
 
-## Estado actual
+Creates a production build.
 
-La base del proyecto ya esta montada con Vite. La implementacion funcional de la SPA se ira construyendo de forma progresiva, comenzando idealmente por:
+```bash
+npm run preview
+```
 
-1. Configuracion del router.
-2. Layout base.
-3. Modulo de autenticacion.
-4. Guards de rutas.
-5. Modulo de tareas.
-6. Dashboard.
-7. Panel administrativo.
+Previews the production build locally.
 
-## Licencia
+## Current Project Status
 
-Este proyecto se distribuye bajo la licencia incluida en [`LICENSE`](./LICENSE).
+The current version of the project includes the base SPA structure, routing system, authentication store, user services, task services, and main views for authentication, dashboard, profile, tasks, task form, admin, home, and not found pages.
+
+Some parts of the system can still be improved, such as stronger role validation, better error handling, form validation, reusable components, and more complete task statistics.
+
+## Possible Future Improvements
+
+- Add stronger validation to forms.
+- Improve authorization for the admin route.
+- Add task status filters.
+- Add task priority levels.
+- Add due dates for tasks.
+- Add dashboard statistics.
+- Improve reusable components.
+- Add loading states.
+- Add confirmation dialogs for important actions.
+- Improve responsive design details.
+
+## Academic Note
+
+This project was developed as part of a performance test to demonstrate understanding of SPA development, frontend architecture, route protection, API consumption, and basic state management using Vanilla JavaScript.
